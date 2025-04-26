@@ -13,11 +13,16 @@ setup(
         # 리소스 파일 (폰트, 이미지 등)
         ('share/' + package_name + '/resources', [
             'book_recognition/resources/MaruBuri-Bold.ttf',
-            'book_recognition/resources/image5.jpg',
+            'book_recognition/resources/image0.jpg',
+            'book_recognition/resources/image1.jpg',
+            'book_recognition/resources/image2.jpg',
+            'book_recognition/resources/image3.jpg',
         ]),
         # 모델 파일
         ('share/' + package_name + '/models', [
-            'book_recognition/models/yolo11s_best.pt'
+            'book_recognition/models/yolo11s_best.pt',
+            'book_recognition/models/yolo11n-obb-only-book.pt',
+            'book_recognition/models/yolo11n-obb-book-and-label.pt',
         ]),
         
     ],
