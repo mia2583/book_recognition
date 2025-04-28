@@ -36,7 +36,8 @@ setup(
     entry_points={
         'console_scripts': [
             'book_recognition_node = book_recognition.book_recognition_node:main',
-            'ai_main = book_recognition.ai_main:run_yolo_ocr_api'
+            'ai_main = book_recognition.ai_main:run_yolo_ocr_api',
+            'find_book_service_server = book_recognition.find_book_service_server:main',
         ],
     },
 )
