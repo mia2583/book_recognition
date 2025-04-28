@@ -50,7 +50,8 @@ def get_angle_between_points(pt1, pt2):
     angle_rad = math.atan2(pt1[1] -pt2[1], pt1[0] - pt2[0])  # y/x의 아크탄젠트
     angle_deg = math.degrees(angle_rad) # 라디안을 도로 변환
     return angle_rad, angle_deg
-                
+
+
 
 def run_yolo(img_path):
     # yolo 처리 이후 이미지
@@ -87,6 +88,7 @@ def run_yolo(img_path):
                 mask_crop = mask[y:y+h, x:x+w]
                 mask_yolo_img = cv2.bitwise_and(cropped, cropped, mask=mask_crop)
                 after_yolo_img_list.append(mask_yolo_img)
+            
 
                 # 중심점 구하기
                 center = np.mean(pts, axis=0)

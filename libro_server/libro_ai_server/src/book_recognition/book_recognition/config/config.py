@@ -8,3 +8,5 @@ from ultralytics import YOLO
 pkg_path = get_package_share_directory('book_recognition')
 
 yolo_model = YOLO(os.path.join(pkg_path, 'models', 'yolo11s_best.pt'))
+# yolo_model = YOLO(os.path.join(pkg_path, 'models', 'yolo11n-obb-only-book.pt'))
+# yolo_model = YOLO(os.path.join(pkg_path, 'models', 'yolo11n-obb-book-and-label.pt'))
