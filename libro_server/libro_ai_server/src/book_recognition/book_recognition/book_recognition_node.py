@@ -1,10 +1,7 @@
-#!/home/addinedu/venv/ocr_venv/bin/python
-
 import rclpy
 from rclpy.node import Node
-
 from book_msg.msg import BookInfo
-from book_recognition.ai_main import ai_main
+from book_recognition.ai_main import run_yolo_ocr_api
 
 from std_msgs.msg import Bool
 
@@ -23,8 +20,8 @@ class BookRecognitionNode(Node):
     def run_libro_ai_callback(self, msg):
         try:
             if msg.data == True :
-                book_results_list, book_location_list, book_gradient_list = ai_main()
-
+                book_results_list, book_location_list, book_gradient_list = run_yolo_ocr_api()
+                
                 for i in range(0, len(book_results_list)):
                     msg = BookInfo()
                     msg.title = book_results_list[i]['title']

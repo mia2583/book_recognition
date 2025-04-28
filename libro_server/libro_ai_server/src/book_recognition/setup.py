@@ -13,11 +13,16 @@ setup(
         # 리소스 파일 (폰트, 이미지 등)
         ('share/' + package_name + '/resources', [
             'book_recognition/resources/MaruBuri-Bold.ttf',
-            'book_recognition/resources/image5.jpg',
+            'book_recognition/resources/image0.jpg',
+            'book_recognition/resources/image1.jpg',
+            'book_recognition/resources/image2.jpg',
+            'book_recognition/resources/image3.jpg',
         ]),
         # 모델 파일
         ('share/' + package_name + '/models', [
-            'book_recognition/models/yolo11s_best.pt'
+            'book_recognition/models/yolo11s_best.pt',
+            'book_recognition/models/yolo11n-obb-only-book.pt',
+            'book_recognition/models/yolo11n-obb-book-and-label.pt',
         ]),
         
     ],
@@ -31,7 +36,7 @@ setup(
     entry_points={
         'console_scripts': [
             'book_recognition_node = book_recognition.book_recognition_node:main',
-            'ai_main = book_recognition.ai_main:ai_main',
+            'ai_main = book_recognition.ai_main:run_yolo_ocr_api',
             'find_book_service_server = book_recognition.find_book_service_server:main',
         ],
     },
