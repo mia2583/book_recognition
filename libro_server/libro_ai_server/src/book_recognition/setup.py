@@ -31,7 +31,8 @@ setup(
     entry_points={
         'console_scripts': [
             'book_recognition_node = book_recognition.book_recognition_node:main',
-            'ai_main = book_recognition.ai_main:ai_main'
+            'ai_main = book_recognition.ai_main:ai_main',
+            'find_book_service_server = book_recognition.find_book_service_server:main',
         ],
     },
 )

@@ -1,3 +1,5 @@
 string title    # 책 제목
+---
+bool success    # 책 검색 성공 여부
 geometry_msgs/Point position  # x, y 좌표만 사용 (z 사용x)
 float32 theta   # 회전 (단위: degree)
