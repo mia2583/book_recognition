@@ -1,7 +1,7 @@
 import os
 
 from book_recognition.modules.yolo_module import run_yolo
-from book_recognition.modules.ocr_module2 import run_ocr
+from book_recognition.modules.ocr_module import run_ocr
 from book_recognition.modules.book_search_module import search_books_in_google
 
 from book_recognition.config.config import pkg_path
