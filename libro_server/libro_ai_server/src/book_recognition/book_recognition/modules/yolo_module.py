@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import math
 from pathlib import Path
-
+import time
 
 # ============================시각화를 위한 것. 최종 코드에서는 삭제=============================
 
@@ -62,7 +62,15 @@ def run_yolo(img_path):
     book_gradient_list = []
 
     img = cv2.imread(img_path)
+
+    # 추론 시작 시간 측정
+    start_time = time.time()
+
     results = yolo_model(img_path)
+
+    end_time = time.time()
+    inference_time = end_time - start_time
+    print(f"Inference Time: {inference_time:.4f} seconds")
 
     for result in results:
         if result.obb is not None:
