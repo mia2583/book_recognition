@@ -3,7 +3,7 @@ from book_msg.srv import FindBook
 import rclpy
 from rclpy.node import Node
 
-from book_recognition.ai_main import ai_main
+from book_recognition.ai_main import run_yolo_ocr_api
 
 class FindBookServiceServer(Node):
     def __init__(self):
@@ -13,7 +13,7 @@ class FindBookServiceServer(Node):
     def find_book_callback(self, request, response):
         print('find book request')
         try:
-            book_results_list, book_location_list, book_gradient_list = ai_main()
+            book_results_list, book_location_list, book_gradient_list = run_yolo_ocr_api()
 
             for i, book in enumerate(book_results_list):
                 print(book['title'])
