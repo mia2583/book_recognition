@@ -70,7 +70,7 @@ def run_yolo(img_path):
 
     end_time = time.time()
     inference_time = end_time - start_time
-    print(f"Inference Time: {inference_time:.4f} seconds")
+    print(f"Yolo Inference Time: {inference_time:.4f} seconds")
 
     for result in results:
         if result.obb is not None:
