@@ -17,6 +17,14 @@ setup(
             'book_recognition/resources/image1.jpg',
             'book_recognition/resources/image2.jpg',
             'book_recognition/resources/image3.jpg',
+            'book_recognition/resources/image4.jpg',
+            'book_recognition/resources/image5.jpg',
+            'book_recognition/resources/image6.jpg',
+            'book_recognition/resources/image7.jpg',
+            'book_recognition/resources/image8.jpg',
+            'book_recognition/resources/image9.jpg',
+            'book_recognition/resources/rotate_image1.jpg',
+            'book_recognition/resources/rotate_image2.jpg',
         ]),
         # 모델 파일
         ('share/' + package_name + '/models', [
