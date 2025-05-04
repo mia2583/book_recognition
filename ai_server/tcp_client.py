@@ -1,6 +1,6 @@
 import socket
 from multiprocessing import Process, Queue
-from yolo_ocr_api import main1
+from new_search import main1
 import subprocess
 
 # AI 모델을 처리하는 프로세스 함수
@@ -38,4 +38,4 @@ def main():
     client_socket.close()
 
 if __name__ == '__main__':
-    main()
+    main
