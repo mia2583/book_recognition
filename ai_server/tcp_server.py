@@ -10,14 +10,18 @@ PORT = 9999
 ## 클라이언트 연결 처리 스레드 ##
 def threaded(client_socket, addr):
     print('>> Connected by:', addr[0], ':', addr[1])
+    print()
+
     while True:
         try:
+            print("Enter book title")
             data = client_socket.recv(16384)
             if not data:
                 print('>> Disconnected by', addr[0], ':', addr[1])
                 break
             msg = data.decode()
             print(f">> Received from {addr[0]}:{addr[1]}: {msg}")
+            print()
             broadcast(msg, sender=client_socket)
         except ConnectionResetError:
             print('>> Disconnected by', addr[0], ':', addr[1])
@@ -54,7 +58,7 @@ start_new_thread(server_send, ())
 
 try:
     while True:
-        print('>> Wait')
+        print('>> Waiting client')
         client_socket, addr = server_socket.accept()
         client_sockets.append(client_socket)
         start_new_thread(threaded, (client_socket, addr))
