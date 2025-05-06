@@ -44,15 +44,7 @@ def draw_ocr_coords(img_path, ocr_result):
     cv2.waitKey(0)  # 키 입력 대기
     cv2.destroyAllWindows()
 
-def print_ocr_result(ocr_result):
-    for line in ocr_result:
-        if line == None:
-            print("이미지 내 인식된 글자 없음")
-            break
-        for word_info in line:
-            box, (text, score) = word_info
-            print(f"인식된 텍스트: {text}, 좌표: {box}, 신뢰도: {score:.2f}")
-    
+
 
 def draw_yolo_box(img_path, yolo_pts_list):
     """
@@ -77,6 +69,28 @@ def draw_yolo_box(img_path, yolo_pts_list):
     cv2.imshow('Image with YOLO Boxes', img)
     cv2.waitKey(0)  # 키 입력 대기
     cv2.destroyAllWindows()
+
+
+
+def print_ocr_result(ocr_result):
+    for line in ocr_result:
+        if line == None:
+            print("이미지 내 인식된 글자 없음")
+            break
+        for word_info in line:
+            box, (text, score) = word_info
+            print(f"인식된 텍스트: {text}, 좌표: {box}, 신뢰도: {score:.2f}")
+    
+
+
+def print_ocr_per_book(books_ocr_result):
+    for i, book in enumerate(books_ocr_result):
+        print(f"Book {i+1} OCR 결과:")
+        if not book:
+            print(" - 텍스트 없음")
+        for item in book:
+            print(f" - 텍스트: {item['text']}, 신뢰도: {item['confidence']:.3f}, 좌표: {item['coords']}")
+
 
 
 def draw_single_point_on_image(image_path, point_list):
