@@ -9,7 +9,8 @@ from paddleocr import PaddleOCR
 import math
 import numpy as np
 import time
-from visualization import draw_ocr_coords, print_ocr_result, draw_yolo_box
+import yaml
+from visualization import draw_ocr_coords, print_ocr_result, draw_yolo_box, draw_single_point_on_image
 
 class BookRecognizer:
     def __init__(self):
@@ -17,9 +18,9 @@ class BookRecognizer:
         self.yolo_device = "cuda" if torch.cuda.is_available() else "cpu"
         self.ocr_gpu_available = paddle.device.is_compiled_with_cuda()
 
-        self.yolo_model = YOLO('/home/myseo/study/book_recognition/libro_server/libro_ai_server/src/book_recognition/book_recognition/models/yolo11s_best.pt').to(self.yolo_device)
+        self.yolo_model = YOLO('/home/addinedu/github/book_recognition/libro_server/libro_ai_server/src/book_recognition/book_recognition/models/yolo11s_best.pt').to(self.yolo_device)
         self.ocr_model = PaddleOCR(lang="korean", use_gpu=self.ocr_gpu_available, use_angle_cls=True, show_log=False)
-        self.img_path = '/home/myseo/study/book_recognition/libro_server/libro_ai_server/src/book_recognition/book_recognition/resources/image0.jpg'
+        self.img_path = '/home/addinedu/github/book_recognition/libro_server/libro_ai_server/src/book_recognition/book_recognition/resources/image0.jpg'
        
         # gpu 확인 코드
         print(f'gpu option: 1. yolo gpu: {self.yolo_model.device}, 2. ocr gpu: {paddle.get_device()}')
@@ -244,6 +245,17 @@ class BookRecognizer:
 
         return book_results
 
+def pixel_to_camera_coordinate(u, v):
+    with open('./jetcobot.yaml', 'r', encoding='utf-8') as file:
+        data = yaml.load(file, Loader=yaml.FullLoader)
+        K = data['K']
+
+        # Z = d / depth_scale
+        Z = 1
+        X = (u - K[0][2]) * Z / K[0][0]
+        Y = (v - K[1][2]) * Z / K[1][1]
+    
+    return X, Y
 
 def main():
     recognizer = BookRecognizer()
