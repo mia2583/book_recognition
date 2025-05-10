@@ -1,7 +1,7 @@
 import socket
-from multiprocessing import Process, Queue
-import subprocess
-from findbook import BookRecognizer
+from book.BookRecognizer import BookRecognizer
+import cv2
+
 
 def main():
     # 서버의 IP와 포트 설정
@@ -14,14 +14,17 @@ def main():
     client_socket.connect((HOST, PORT))
     print(f"Connected to server at {HOST}:{PORT}")
 
+    img_path="/home/myseo/study/book_recognition/libro_server/libro_ai_server/src/book_recognition/book_recognition/resources/image0.jpg"
+    img = img = cv2.imread(img_path)
+
     while True:
         # 서버로부터 데이터 받기
         data = client_socket.recv(2**20).decode()  # 서버로부터 데이터 받음
 
         if data == 'quit':
             break
-
-        result = recognizer.infer(data)
+        
+        result = recognizer.infer(img, data)
 
         print("Received result from AI model:", result)
 
