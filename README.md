@@ -126,3 +126,46 @@ requester: making request: book_msg.srv.FindBook_Request(title='ROS2 혼자공�
 response:
 book_msg.srv.FindBook_Response(success=True, position=geometry_msgs.msg.Point(x=463.0, y=240.49998474121094, z=0.0), theta=89.41085815429688)
 ```
+
+
+## 3. 사진 내의 특정 책 정보 받아오기 (TCP 통신)
+
+### 동작 설명
+
+서버측에서 책 제목을 전송하면, 클라이언트에서 주어진 사진에 해당 책이 있으면 책의 각도와 중앙 좌표를 전달한다.
+
+### 실행 방법
+
+#### 터미널1
+
+```bash
+cd ai_server
+python3 tcp_server.py
+```
+
+#### 터미널2
+
+```bash
+cd ai_server
+python3 tcp_client.py
+```
+
+### 출력 예시
+
+터미널2를 실행한 후, 터미널 1에서 아래와 같이 연결 확인 메세지를 출력하고 책 제목 입력을 요청한다.
+
+```
+>> Connected by: 192.168.35.17 : 46660
+
+Enter book title
+```
+
+책 제목을 입력하면 client쪽에서 책의 정보를 전달한다.
+
+```
+# cpu 예시
+OCR Inference Time: 5.7084 seconds
+Yolo Inference Time: 1.5950 seconds
+Total Inference Time: 9.7400 seconds
+Received result from AI model: Found book - location: 927.0, 482.25, theta: 89.41611417995652
+```
