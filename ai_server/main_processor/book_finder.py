@@ -14,27 +14,59 @@ import datetime
 import yaml
 import ai_server.main_processor.main_config as main_config
 from ai_server.udp.udp_receiver import UdpStreamReceiver
+from ai_server.tcp.tcp_server import TcpServer
+import cv2
+import numpy as np
+import queue
 
 
-# 메인 함수
+
 def main():
-    # UDP 영상 수신 스레드 시작
+    # 공유 프레임과 락 생성
+    shared_frame = [None]  # 리스트 형태로 참조 유지
+    shared_z = [None]
+    frame_lock = threading.Lock()
 
-    receiver_instance = UdpStreamReceiver(
+    # UDP 수신기 초기화 및 실행
+    udp_receiver = UdpStreamReceiver(
         calibration_file='./ai_server/resources/jetcobot.yaml'
     )
 
-    udp_thread = threading.Thread(target=receiver_instance.start_receiving, daemon=True)
+    def udp_runner():
+        udp_receiver.start_receiving()
+        frame_queue = udp_receiver.get_frame_queue()
+        
+
+        while True:
+            try:
+                encoded_frame = frame_queue.get(timeout=1.0)
+                decoded_frame = cv2.imdecode(
+                    np.frombuffer(encoded_frame, dtype=np.uint8), cv2.IMREAD_COLOR
+                )
+                if decoded_frame is not None:
+                    with frame_lock:
+                        shared_frame[0] = decoded_frame
+                    
+                    aruco_z = udp_receiver.get_latest_z_from_aruco()
+                    shared_z[0] = aruco_z
+            except queue.Empty:
+                continue
+
+    udp_thread = threading.Thread(target=udp_runner, daemon=True)
     udp_thread.start()
 
+    # TCP 서버 초기화 및 실행
+    tcp_server = TcpServer(frame_ref=shared_frame, frame_lock=frame_lock, aruco_z=shared_z)
+    tcp_thread = threading.Thread(target=tcp_server.run, daemon=True)
+    tcp_thread.start()
+
     try:
-        # 메인 스레드는 계속 실행
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        print("서버를 종료합니다.")
+        print("[INFO] 메인 서버 종료 요청됨")
+        udp_receiver.stop_receiving()
 
-    
-    
+
 if __name__ == '__main__':
     main()

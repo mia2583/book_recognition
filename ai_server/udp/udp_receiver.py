@@ -32,6 +32,8 @@ class UdpStreamReceiver:
         self.mapy = None
         self.aruco_processor = None
 
+        self.latest_z = None  # Z축 값을 저장할 변수 추가
+
         # 캘리브레이션 파일 로드
         if calibration_file:
             print(f"[INFO] UdpReceiver: 캘리브레이션 파일 로드 시도: {calibration_file}")
@@ -152,17 +154,16 @@ class UdpStreamReceiver:
                         aruco_data_list = self.aruco_processor.get_pose_data(corners, ids, rvecs, tvecs)
 
                         if aruco_data_list:  # 검출된 마커가 있다면
-                            print(f"\n--- UDP 수신 (프레임 {frame_id}): 감지된 ArUco 마커 정보 ---")
                             for marker_data in aruco_data_list:
-                                marker_id = marker_data.get('id', 'N/A')
                                 tvec_m = marker_data.get('tvec')
-                                rvec_m = marker_data.get('rvec')
-                                rot_z_deg = marker_data.get('rotation_z')
-                                print(f" ID {marker_id}: "
-                                      f"Pos(tvec) = [{tvec_m[0, 0]:.3f}, {tvec_m[1, 0]:.3f}, {tvec_m[2, 0]:.3f}] | "
-                                      f"Rot(rvec) = [{rvec_m[0, 0]:.3f}, {rvec_m[1, 0]:.3f}, {rvec_m[2, 0]:.3f}] | "
-                                      f"Z-Rot = {rot_z_deg:.1f}deg")
-                            print("--------------------------------------------------\n")
+                                # Z값을 최신 상태로 업데이트
+                                self.latest_z = tvec_m[2][0] if tvec_m is not None else None
+                                # print(f"\n--- UDP 수신 (프레임 {self.latest_z}): 감지된 ArUco 마커 정보 ---")
+                                
+                        
+                        else:
+                            print("[INFO] ArUco 마커가 감지되지 않았습니다.")
+
 
                         # 프레임에 마커 정보 그리기
                         self.aruco_processor.draw_detected_markers(undistorted_frame, corners, ids, None)
@@ -241,3 +242,6 @@ class UdpStreamReceiver:
 
     def get_frame_queue(self) -> queue.Queue:
         return self.frame_queue
+    
+    def get_latest_z_from_aruco(self):
+        return self.latest_z  # _receiver_loop에서 계산된 Z값을 반환
