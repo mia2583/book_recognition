@@ -33,7 +33,7 @@ class YoloDetector:
                     pts = polygon.cpu().numpy().astype(np.int32).reshape(4, 2)
                     yolo_pts_list.append(pts)
                     center = np.mean(pts, axis=0)
-                    book_location_list.append((center[0], center[1]))
+                    book_location_list.append((center[0]/2, center[1]/2))  # 확대한 좌표 원위치
                     sorted_pts = sorted(pts, key=lambda pt: self.get_angle(pt, center)[0])
                     _, deg = self.get_angle(sorted_pts[3], sorted_pts[0])
                     book_gradient_list.append(deg)

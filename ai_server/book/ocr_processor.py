@@ -12,4 +12,4 @@ class OcrProcessor:
         start = time.time()
         results = self.ocr_model.ocr(img, cls=True)
         print(f"OCR Inference Time: {time.time() - start:.4f} seconds")
-        return results
+        return results # 결과가 없는 경우에는 [None]을 return

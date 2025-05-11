@@ -23,10 +23,15 @@ def request_book_z(server_ip='192.168.35.17', server_port=9999, book_title=''):
             response_data = yaml.unsafe_load(response)
 
             if response_data["success"]:
+                print(f"검색 성공: {response_data['success']}")
                 print(f"책 제목: {response_data['book_title']}")
-                print(f"ArUco Z 값: {response_data['aruco_z']}")
+                print(f"x: {response_data['book_x']}")
+                print(f"y: {response_data['book_y']}")
+                print(f"z: {response_data['book_z']}")
+                print(f"angle(deg): {response_data['book_angle']}")
             else:
-                print(f"오류: {response_data.get('error', '알 수 없는 오류')}")
+                print(f"검색 성공: {response_data['success']}")
+                # print(f"오류 원인: {response_data['error']}")
             
     except Exception as e:
         print(f"클라이언트 오류 발생: {e}")

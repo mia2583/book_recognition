@@ -20,12 +20,15 @@ import numpy as np
 import queue
 
 
-
 def main():
     # 공유 프레임과 락 생성
     shared_frame = [None]  # 리스트 형태로 참조 유지
     shared_z = [None]
     frame_lock = threading.Lock()
+
+    # yolo, ocr 준비
+    recognizer = BookRecognizer()
+
 
     # UDP 수신기 초기화 및 실행
     udp_receiver = UdpStreamReceiver(
@@ -56,7 +59,7 @@ def main():
     udp_thread.start()
 
     # TCP 서버 초기화 및 실행
-    tcp_server = TcpServer(frame_ref=shared_frame, frame_lock=frame_lock, aruco_z=shared_z)
+    tcp_server = TcpServer(frame_ref=shared_frame, frame_lock=frame_lock, aruco_z=shared_z, book_recognizer=recognizer)
     tcp_thread = threading.Thread(target=tcp_server.run, daemon=True)
     tcp_thread.start()
 
