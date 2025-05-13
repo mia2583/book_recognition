@@ -127,7 +127,6 @@ response:
 book_msg.srv.FindBook_Response(success=True, position=geometry_msgs.msg.Point(x=463.0, y=240.49998474121094, z=0.0), theta=89.41085815429688)
 ```
 
-
 ## 3. 사진 내의 특정 책 정보 받아오기 (TCP 통신)
 
 ### 동작 설명
@@ -169,3 +168,5 @@ Yolo Inference Time: 1.5950 seconds
 Total Inference Time: 9.7400 seconds
 Received result from AI model: Found book - location: 927.0, 482.25, theta: 89.41611417995652
 ```
+
+## 4. 사진 내의 특정 책 정보 받아오기 (Udp 통신)

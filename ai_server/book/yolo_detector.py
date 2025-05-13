@@ -7,7 +7,7 @@ import numpy as np
 
 class YoloDetector:
     def __init__(self, device="cuda"):
-        self.model = YOLO('/home/myseo/study/book_recognition/libro_server/libro_ai_server/src/book_recognition/book_recognition/models/yolo11s_best.pt').to(device)
+        self.model = YOLO('/home/addinedu/github/book_recognition/ai_server/resources/yolo11s_best.pt').to(device)
 
     def get_angle(self, pt1, pt2):
         rad = math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0])

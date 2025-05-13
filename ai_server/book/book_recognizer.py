@@ -7,6 +7,7 @@ import yaml
 from ai_server.book.ocr_processor import OcrProcessor
 from ai_server.book.yolo_detector import YoloDetector
 from ai_server.book.book_searcher import BookSearcher
+from ai_server.book.visualization import draw_ocr_coords, draw_yolo_box
 
 
 class BookRecognizer:
@@ -41,6 +42,7 @@ class BookRecognizer:
                     if cv2.pointPolygonTest(yolo_pts, (int(center[0]), int(center[1])), False) >= 0:
                         books_text_only[i] += text
                         break
+
         return books_text_only
     
 
@@ -54,7 +56,13 @@ class BookRecognizer:
         books_text_result = self.classify_texts(ocr_result, yolo_pts_list)
         book_results = self.book_searcher.search_books_in_google(books_text_result)
 
+        draw_yolo_box(img, yolo_pts_list)
+        # print(ocr_result)
+        # draw_ocr_coords(img, ocr_result)
+
         print(f"Total Inference Time: {time.time() - start:.4f} seconds")
+
+        # print(books_text_result)
 
         for i, book in enumerate(book_results):
             if book['title'] == self.title:
@@ -80,8 +88,8 @@ class BookRecognizer:
 def main():
     recognizer = BookRecognizer()
     title="ROS2 혼자공부하는 로봇SW 직접 만들고 코딩하자"
-    img_path="/home/myseo/study/book_recognition/libro_server/libro_ai_server/src/book_recognition/book_recognition/resources/image0.jpg"
-    img = img = cv2.imread(img_path)
+    img_path="/home/addinedu/github/book_recognition/ai_server/resources/test_1.png"
+    img = cv2.imread(img_path)
 
     recognizer.infer(img, title)
 

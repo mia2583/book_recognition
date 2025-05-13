@@ -1,9 +1,9 @@
 import cv2
 import struct
 
-SERVER_IP = "192.168.35.17"
+SERVER_IP = "192.168.0.158"
 CLIENT_IP = "0.0.0.0"
-PORT = 9999
+PORT = 5000
 
 # 네트워크 설정
 CHUNK_SIZE = 1500  # MTU 고려
@@ -52,7 +52,8 @@ ARUCO_DICT = {
 }
 DEFAULT_ARUCO_TYPE = "DICT_6X6_250"
 DEFAULT_ARUCO_LENGTH = 0.06
+JETCOBOT_ARUCO_LENGTH = 0.02
 USB_ARUCO_LENGTH = 0.075
 
-JETCOBOT_CALIBRATION_FILE = "camera_params/jetcobot.yaml"
+JETCOBOT_CALIBRATION_FILE = "ai_server/resources/jetcobot.yaml"
 GLOBAL_CALIBRATION_FILE = "camera_params/global.yaml"

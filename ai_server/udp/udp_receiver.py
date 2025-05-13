@@ -16,7 +16,7 @@ class UdpStreamReceiver:
     def __init__(self, listen_ip=udp_config.CLIENT_IP, listen_port=udp_config.PORT,
                  buffer_size=udp_config.CLIENT_RECV_BUFFER,
                  queue_size=udp_config.DEFAULT_QUEUE_MAX_SIZE,
-                 calibration_file=None):
+                 calibration_file=udp_config.JETCOBOT_CALIBRATION_FILE):
         self.listen_address = (listen_ip, listen_port)
         self.buffer_size = buffer_size
         self.frame_queue = queue.Queue(maxsize=queue_size)
@@ -54,7 +54,7 @@ class UdpStreamReceiver:
                     camera_matrix=self.new_K,
                     dist_coeffs=None,  # 왜곡 보정 후에는 왜곡 계수 없음
                     aruco_dict_type=udp_config.ARUCO_DICT.get(udp_config.DEFAULT_ARUCO_TYPE, cv2.aruco.DICT_6X6_250),
-                    marker_length=udp_config.DEFAULT_ARUCO_LENGTH
+                    marker_length=udp_config.JETCOBOT_ARUCO_LENGTH
                 )
                 print("[INFO] UdpReceiver: 왜곡 보정 맵 및 ArucoProcessor 초기화 완료.")
             else:
@@ -82,7 +82,7 @@ class UdpStreamReceiver:
         stale_ids = [fid for fid, data in self.reassembly_buffer.items()
                      if current_time - data['last_seen'] > udp_config.FRAME_REASSEMBLY_TIMEOUT]
         if stale_ids:
-            print(f"[WARN] 타임아웃 프레임 정리: ID {stale_ids}")
+            # print(f"[WARN] 타임아웃 프레임 정리: ID {stale_ids}")
             for frame_id in stale_ids:
                 del self.reassembly_buffer[frame_id]
 
@@ -156,13 +156,15 @@ class UdpStreamReceiver:
                         if aruco_data_list:  # 검출된 마커가 있다면
                             for marker_data in aruco_data_list:
                                 tvec_m = marker_data.get('tvec')
+                                # print(f"\n--- UDP 수신 (프레임 {tvecs}): 감지된 ArUco 마커 정보 ---")
                                 # Z값을 최신 상태로 업데이트
                                 self.latest_z = tvec_m[2][0] if tvec_m is not None else None
                                 # print(f"\n--- UDP 수신 (프레임 {self.latest_z}): 감지된 ArUco 마커 정보 ---")
                                 
                         
-                        else:
-                            print("[INFO] ArUco 마커가 감지되지 않았습니다.")
+                        # else:
+                        #     # print("[INFO] ArUco 마커가 감지되지 않았습니다.")
+                        #     continue
 
 
                         # 프레임에 마커 정보 그리기

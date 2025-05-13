@@ -1,7 +1,8 @@
 import socket
 import yaml
+import ai_server.tcp.tcp_config as tcp_config
 
-def request_book_z(server_ip='192.168.35.17', server_port=9999, book_title=''):
+def request_book_z(server_ip=tcp_config.SERVER_IP, server_port=tcp_config.PORT, book_title=''):
     try:
         # 소켓 생성 및 연결
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -22,15 +23,15 @@ def request_book_z(server_ip='192.168.35.17', server_port=9999, book_title=''):
             response = client_socket.recv(1024).decode('utf-8')
             response_data = yaml.unsafe_load(response)
 
-            if response_data["success"]:
-                print(f"검색 성공: {response_data['success']}")
-                print(f"책 제목: {response_data['book_title']}")
-                print(f"x: {response_data['book_x']}")
-                print(f"y: {response_data['book_y']}")
-                print(f"z: {response_data['book_z']}")
-                print(f"angle(deg): {response_data['book_angle']}")
-            else:
-                print(f"검색 성공: {response_data['success']}")
+            # if response_data["success"]:
+            print(f"검색 성공: {response_data['success']}")
+            print(f"책 제목: {response_data['book_title']}")
+            print(f"x: {response_data['book_x']}")
+            print(f"y: {response_data['book_y']}")
+            print(f"z: {response_data['book_z']}")
+            print(f"angle(deg): {response_data['book_angle']}")
+            # else:
+                # print(f"검색 성공: {response_data['success']}")
                 # print(f"오류 원인: {response_data['error']}")
             
     except Exception as e:

@@ -2,6 +2,7 @@ import cv2
 
 ## Server IP and Port ##
 HOST_IP = '0.0.0.0'
+SERVER_IP = '192.168.0.158'
 PORT = 9999
 
 DEFAULT_JPEG_QUALITY = 90

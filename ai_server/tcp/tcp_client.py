@@ -5,7 +5,7 @@ import cv2
 
 def main():
     # 서버의 IP와 포트 설정
-    HOST = '192.168.35.17'  # 서버의 IP 주소
+    HOST = '192.168.0.218'  # 서버의 IP 주소
     PORT = 9999  # 서버의 포트 번호
     recognizer = BookRecognizer()
 

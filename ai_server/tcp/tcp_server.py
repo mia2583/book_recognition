@@ -41,13 +41,20 @@ class TcpServer:
 
     
     def pixel_to_camera_coordinate(self, u, v):
-        with open('./resources/jetcobot.yaml', 'r', encoding='utf-8') as file:
+        Z = self.aruco_z[0]
+        if Z == None:
+            return None, None
+        with open('./ai_server/resources/jetcobot.yaml', 'r', encoding='utf-8') as file:
             data = yaml.load(file, Loader=yaml.FullLoader)
             K = data['K']
+            print(type(K[0][0]))
 
-            Z = self.aruco_z
+            
+
+            print(type(Z))
             X = (u - K[0][2]) * Z / K[0][0]
             Y = (v - K[1][2]) * Z / K[1][1]
+
         
         return X, Y
     
@@ -88,11 +95,17 @@ class TcpServer:
 
                         print(f"center: {book_search['center']}")
                         print(f"angle: {book_search['angle']}")
-                        
-                        book_x = self.pixel_to_camera_coordinate(book_search['center'][0]) if book_search['center'] is not None else None
-                        book_y = self.pixel_to_camera_coordinate(book_search['center'][1]) if book_search['center'] is not None else None
 
-                        if self.aruco_z:
+                        book_x, book_y = None, None
+                        
+                        # print(book_x)
+                        
+                        if self.aruco_z[0]:
+                            if book_search['center'] != None:
+                                pic_x = self.numpy_to_native(book_search['center'][0])
+                                pic_y = self.numpy_to_native(book_search['center'][1])
+                                book_x, book_y = self.pixel_to_camera_coordinate(pic_x,pic_y)
+
                             response = {
                                 "success": book_search['success'],
                                 "book_title": data,

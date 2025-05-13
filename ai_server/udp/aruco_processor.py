@@ -6,7 +6,7 @@ from scipy.spatial.transform import Rotation
 
 
 class ArucoProcessor:
-    def __init__(self, camera_matrix, dist_coeffs, aruco_dict_type=cv2.aruco.DICT_ARUCO_ORIGINAL, marker_length=0.05):
+    def __init__(self, camera_matrix, dist_coeffs, aruco_dict_type=cv2.aruco.DICT_ARUCO_ORIGINAL, marker_length=0.02):
         """
         ArUco 마커 검출 및 포즈 추정을 처리하는 클래스입니다.
         Args:

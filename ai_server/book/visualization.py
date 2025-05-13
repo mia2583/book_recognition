@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 import cv2
 import numpy as np
 
-def draw_ocr_coords(img_path, ocr_result):
+def draw_ocr_coords(img, ocr_result):
     """
     주어진 이미지 경로와 OCR 결과를 바탕으로 이미지에 OCR의 박스와 텍스트를 그리는 함수
 
@@ -13,13 +13,12 @@ def draw_ocr_coords(img_path, ocr_result):
                 [[   [   [[x, y], [좌표2], [좌표3], [좌표4]],   ('이', 0.9981935620307922)   ], ...
     """
     # 이미지 읽기
-    img = cv2.imread(img_path)
     img = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
     pil_img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     draw = ImageDraw.Draw(pil_img)
 
     # 좌표 색상 설정
-    font = ImageFont.truetype("/home/myseo/study/book_recognition/libro_server/libro_ai_server/src/book_recognition/book_recognition/resources/MaruBuri-Bold.ttf", 20)
+    font = ImageFont.truetype("/home/addinedu/github/book_recognition/ai_server/resources/MaruBuri-Bold.ttf", 20)
 
     # OCR 좌표 그리기
     for line in ocr_result:
@@ -46,7 +45,7 @@ def draw_ocr_coords(img_path, ocr_result):
 
 
 
-def draw_yolo_box(img_path, yolo_pts_list):
+def draw_yolo_box(img, yolo_pts_list):
     """
     주어진 이미지에 YOLO 박스를 그리는 함수
 
@@ -57,7 +56,6 @@ def draw_yolo_box(img_path, yolo_pts_list):
                [array([[x, y], [좌표2], [좌표3], [좌표4]], dtype=int32), ...]
     """
     # 이미지 불러오기
-    img = cv2.imread(img_path)
     img = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
 
     # YOLO 박스 그리기
