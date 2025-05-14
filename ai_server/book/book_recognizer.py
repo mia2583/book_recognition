@@ -56,7 +56,7 @@ class BookRecognizer:
         books_text_result = self.classify_texts(ocr_result, yolo_pts_list)
         book_results = self.book_searcher.search_books_in_google(books_text_result)
 
-        draw_yolo_box(img, yolo_pts_list)
+        # draw_yolo_box(img, yolo_pts_list)
         # print(ocr_result)
         # draw_ocr_coords(img, ocr_result)
 

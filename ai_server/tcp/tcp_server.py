@@ -67,50 +67,41 @@ class TcpServer:
 
     def handle_client(self, conn, addr):
         try:
-            while True:  # 클라이언트와 연결을 끊지 않고 계속 처리
-                # 클라이언트로부터 받은 데이터 (책 제목)
-                data = conn.recv(1024).decode('utf-8')
-                if data.lower() == 'q':  # 종료 요청을 받으면 연결 종료
-                    print(f"클라이언트 {addr}에서 종료 요청 받음. 연결 종료.")
-                    break
+            while True:
+                try:
+                    data = conn.recv(1024)
+                    if not data:
+                        print(f"[INFO] 클라이언트 {addr} 연결 종료됨 (recv 반환 없음).")
+                        break
 
-                print(f"클라이언트로부터 받은 요청: 책 제목 '{data}' 찾는 중...")
+                    data = data.decode('utf-8')
+                    if data.lower() == 'q':
+                        print(f"[INFO] 클라이언트 {addr}에서 종료 요청. 연결 종료.")
+                        break
 
-                with self.frame_lock:
-                    if self.frame_ref[0] is not None:
-                        frame = self.frame_ref[0]
+                    print(f"[INFO] 클라이언트로부터 받은 요청: 책 제목 '{data}' 찾는 중...")
 
-                        # 현재 프레임 저장
-                        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-                        filename = f"captured_frame_{timestamp}.jpg"
-                        save_path = os.path.join("captured", filename)
-                        os.makedirs(os.path.dirname(save_path), exist_ok=True)
-                        cv2.imwrite(save_path, frame)
-                        print(f"현재 프레임 저장됨: {save_path}")
-                        book_search = self.book_recognizer.infer(frame, data)
+                    with self.frame_lock:
+                        if self.frame_ref[0] is not None:
+                            frame = self.frame_ref[0]
+                            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                            filename = f"captured_frame_{timestamp}.jpg"
+                            save_path = os.path.join("captured", filename)
+                            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+                            cv2.imwrite(save_path, frame)
+                            book_search = self.book_recognizer.infer(frame, data)
 
-                        # print("book search done")
-                        
-                        # print(f"아루코 z값: {self.numpy_to_native(self.aruco_z[0])}")
-
-                        print(f"center: {book_search['center']}")
-                        print(f"angle: {book_search['angle']}")
-
-                        book_x, book_y = None, None
-                        
-                        # print(book_x)
-                        
-                        if self.aruco_z[0]:
-                            if book_search['center'] != None:
+                            book_x, book_y = None, None
+                            if self.aruco_z[0] and book_search['center'] is not None:
                                 pic_x = self.numpy_to_native(book_search['center'][0])
                                 pic_y = self.numpy_to_native(book_search['center'][1])
-                                book_x, book_y = self.pixel_to_camera_coordinate(pic_x,pic_y)
+                                book_x, book_y = self.pixel_to_camera_coordinate(pic_x, pic_y)
 
                             response = {
                                 "success": book_search['success'],
                                 "book_title": data,
-                                "book_x" : book_x,
-                                "book_y" : book_y,
+                                "book_x": book_x,
+                                "book_y": book_y,
                                 "book_z": self.numpy_to_native(self.aruco_z[0]),
                                 "book_angle": book_search['angle']
                             }
@@ -118,40 +109,28 @@ class TcpServer:
                             response = {
                                 "success": False,
                                 "book_title": data,
-                                "book_x" : book_x,
-                                "book_y" : book_y,
+                                "book_x": None,
+                                "book_y": None,
                                 "book_z": None,
-                                "book_angle": book_search['angle'],
-                                "error": "ArUco 마커를 찾을 수 없습니다."
+                                "book_angle": None,
+                                "error": "입력된 프레임이 없습니다."
                             }
-                    else:
-                        response = {
-                            "success": False,
-                            "book_title": data,
-                            "book_x" : None,
-                            "book_y" : None,
-                            "book_z": None,
-                            "book_angle": None,
-                            "error": "입력된 프레임이 없습니다."
-                        }
-                        print("사용 가능한 프레임 없음")
 
-                # YAML 형식으로 응답 작성
-                response_yaml = yaml.dump(response, allow_unicode=True)
-                conn.send(response_yaml.encode('utf-8'))
+                    response_yaml = yaml.dump(response, allow_unicode=True)
 
+                    try:
+                        conn.send(response_yaml.encode('utf-8'))
+                    except (BrokenPipeError, ConnectionResetError):
+                        print(f"[INFO] 클라이언트 {addr} 전송 중 연결 끊김.")
+                        break
 
-        except Exception as e:
-            print(f"[ERROR] TCP 처리 오류: {e}")
-            response = {
-                "success": False,
-                "book_title": data,
-                "aruco_z": None,
-                "error": f"처리 오류: {e}"
-            }
-            response_yaml = yaml.dump(response, allow_unicode=True)
-            conn.send(response_yaml.encode('utf-8'))
+                except (ConnectionResetError, BrokenPipeError):
+                    print(f"[INFO] 클라이언트 {addr} 수신 중 연결 끊김.")
+                    break
+                except Exception as e:
+                    print(f"[ERROR] 요청 처리 중 예외 발생: {e}")
+                    break
 
         finally:
             conn.close()
-            print(f"TCP 클라이언트 연결 종료: {addr}")
+            print(f"[INFO] TCP 클라이언트 연결 종료: {addr}")
