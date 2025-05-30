@@ -95,7 +95,11 @@ class TcpServer:
                             if self.aruco_z[0] and book_search['center'] is not None:
                                 pic_x = self.numpy_to_native(book_search['center'][0])
                                 pic_y = self.numpy_to_native(book_search['center'][1])
-                                book_x, book_y = self.pixel_to_camera_coordinate(pic_x, pic_y)
+
+                                temp_book_x, temp_book_y = self.pixel_to_camera_coordinate(pic_x, pic_y)
+                                book_x = self.numpy_to_native(temp_book_x) 
+                                book_y = self.numpy_to_native(temp_book_y) 
+                                # book_x, book_y = self.pixel_to_camera_coordinate(pic_x, pic_y)
 
                             response = {
                                 "success": book_search['success'],
@@ -103,7 +107,8 @@ class TcpServer:
                                 "book_x": book_x,
                                 "book_y": book_y,
                                 "book_z": self.numpy_to_native(self.aruco_z[0]),
-                                "book_angle": book_search['angle']
+                                "book_angle": self.numpy_to_native(book_search['angle']) 
+                                # "book_angle": book_search['angle']
                             }
                         else:
                             response = {

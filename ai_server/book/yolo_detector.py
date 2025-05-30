@@ -20,7 +20,7 @@ class YoloDetector:
 
         img = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
         start = time.time()
-        results = self.model(img, verbose=False)
+        results = self.model(img, verbose=False, conf=0.7)
         print(f"Yolo Inference Time: {time.time() - start:.4f} seconds")
 
         for result in results:

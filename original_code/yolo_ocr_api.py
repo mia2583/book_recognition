@@ -12,13 +12,12 @@ from paddleocr import PaddleOCR
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import os
-
+import time
 import math
 
 # ex) img_path = "./test_image/image0.jpg"
 # 책별로 crop한 이미지 리스트, 책 위치 정보 반환
-def run_yolo(img_path):
-    model = YOLO("./yolo11s_best.pt")
+def run_yolo(img_path, model):
     # yolo 처리 이후에 이미지
     after_yolo_img_list = []
     # 책 위치 정보 리스트
@@ -81,7 +80,8 @@ def run_yolo(img_path):
                 mask_crop = mask[y:y+h, x:x+w]
                 result_img = cv2.bitwise_and(cropped, cropped, mask=mask_crop)
 
-                print("이미지", x, ' ', y)
+                conf = result.obb.conf
+                print("이미지", x, ' ', y, ' ', conf)
 
                 after_yolo_img_list.append(result_img)
                 save_path = Path(f"./yolo_test/{i}.png")
@@ -167,9 +167,8 @@ def search_books_in_google(search_texts_list):
 
 # ex) image_list = [image1, image2, ...]와 같은 형태. 각 이미지는 cv 형식
 # 책들의 ocr 리스트를 생성
-def run_ocr(image_list):
+def run_ocr(image_list, ocr):
     # PaddleOCR 리더 생성(한글 'korean' 설정)
-    ocr = PaddleOCR(lang='korean')
     search_keyword_list = []
 
     for img in image_list:
@@ -206,28 +205,37 @@ def run_ocr(image_list):
 
 
 def main():
-    img_path = "./test_image/image1.jpg"
-    after_yolo_img_list, book_location_list, book_gradient_list = run_yolo(img_path)
+    # use_gpu=True
+    # ocr = PaddleOCR(lang='korean', use_gpu=use_gpu, use_angle_cls=True)
+
+    device="cuda"
+    model = YOLO("./yolo11s_best.pt").to(device)
+
+    start = time.time()
+    img_path = "./test_image/image8.jpg"
+    after_yolo_img_list, book_location_list, book_gradient_list = run_yolo(img_path, model)
     if len(after_yolo_img_list) == 0 :
         print('Yolo not detected')
         return 
     
-    search_keyword_list = run_ocr(after_yolo_img_list)
-    if len(search_keyword_list) == 0 :
-        print('No word detected')
-        return 
+    #search_keyword_list = run_ocr(after_yolo_img_list, ocr)
+    #if len(search_keyword_list) == 0 :
+    #    print('No word detected')
+    #    return 
+    
+    # print(f"Total Inference Time: {time.time() - start:.4f} seconds")
 
-    book_results_list = search_books_in_google(search_keyword_list)
+    # book_results_list = search_books_in_google(search_keyword_list)
 
     # 책 별 중심 좌표
-    print(len(book_location_list))
+    # print(len(book_location_list))
 
-    # 책 별 제목
-    for book in book_results_list:
-        print(book['search_text'])
-        print(book['title'])
-        if book['title'] != "검색 실패: No results found" :
-            print(book['authors'])
+    # # 책 별 제목
+    # for book in book_results_list:
+    #     print(book['search_text'])
+    #     print(book['title'])
+    #     if book['title'] != "검색 실패: No results found" :
+    #         print(book['authors'])
             
 
 
