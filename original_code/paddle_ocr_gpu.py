@@ -13,8 +13,7 @@ print(f'using gpu: ', gpu_available)
 
 
 # 이미지 경로
-image_path = './test_image/image7.jpg'
-
+image_path = './yolo_test'
 # OpenCV로 이미지 불러오기
 img = cv2.imread(image_path)
 img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # RGB로 변환 (PaddleOCR는 RGB 사용)
